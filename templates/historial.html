@@ -1,0 +1,132 @@
+{% extends "base.html" %}
+
+{% block title %}Historial de Accesos{% endblock %}
+
+{% block content %}
+<section class="bg-white rounded-2xl shadow p-6">
+
+    <div class="flex items-center justify-between mb-5">
+        <h2 class="text-xl font-semibold">Consulta de Historial de Accesos</h2>
+        <a href="/" class="text-sm text-indigo-600 hover:text-indigo-800 transition">
+            &larr; Volver al dashboard
+        </a>
+    </div>
+
+    <!-- ===================== FILTROS DE BÚSQUEDA ===================== -->
+    <form method="get" action="/historial"
+          class="grid grid-cols-1 sm:grid-cols-12 gap-3 items-end mb-6">
+
+        <div class="sm:col-span-6">
+            <label for="q" class="block text-sm font-medium mb-1">
+                Código o nombre
+            </label>
+            <input type="text" id="q" name="q" value="{{ q }}"
+                   placeholder="Ej. 2026-1042, Quispe o Ana Quispe"
+                   class="w-full rounded-lg border border-slate-300 px-3 py-2
+                          focus:outline-none focus:ring-2 focus:ring-indigo-400">
+        </div>
+
+        <div class="sm:col-span-3">
+            <label for="fecha" class="block text-sm font-medium mb-1">
+                Fecha <span class="text-slate-400 font-normal">(opcional)</span>
+            </label>
+            <input type="date" id="fecha" name="fecha" value="{{ fecha }}"
+                   class="w-full rounded-lg border border-slate-300 px-3 py-2
+                          focus:outline-none focus:ring-2 focus:ring-indigo-400">
+        </div>
+
+        <div class="sm:col-span-3 flex gap-2">
+            <button type="submit"
+                    class="flex-1 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700
+                           text-white font-medium transition">
+                Buscar
+            </button>
+            <a href="/historial"
+               class="px-3 py-2 rounded-lg bg-slate-200 hover:bg-slate-300
+                      text-slate-700 font-medium transition">
+                Limpiar
+            </a>
+        </div>
+    </form>
+
+    {% if fecha_malformada %}
+    <div class="mb-4 border border-amber-300 bg-amber-50 text-amber-800
+                text-sm rounded-xl px-4 py-2">
+        La fecha ingresada no tiene un formato válido (use AAAA-MM-DD). Se muestran
+        los resultados sin filtro de fecha.
+    </div>
+    {% endif %}
+
+    <!-- ===================== RESULTADOS ===================== -->
+    <div class="flex items-center justify-between mb-3">
+        <span class="text-sm text-slate-500">
+            {{ total }} registro(s) encontrado(s)
+            {% if q %}· búsqueda: <strong>{{ q }}</strong>{% endif %}
+            {% if fecha %}· fecha: <strong>{{ fecha }}</strong>{% endif %}
+        </span>
+    </div>
+
+    <div class="overflow-x-auto">
+        <table class="w-full text-sm">
+            <thead>
+                <tr class="text-left text-slate-500 border-b">
+                    <th class="py-2 pr-3">Fecha</th>
+                    <th class="py-2 pr-3">Hora</th>
+                    <th class="py-2 pr-3">Código</th>
+                    <th class="py-2 pr-3">Estudiante</th>
+                    <th class="py-2 pr-3">Carrera</th>
+                    <th class="py-2 pr-3">Evento</th>
+                    <th class="py-2">Similitud</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for r in registros %}
+                <tr class="border-b last:border-0 hover:bg-slate-50">
+                    <td class="py-2 pr-3 whitespace-nowrap">{{ r["fecha"] }}</td>
+                    <td class="py-2 pr-3 whitespace-nowrap">{{ r["hora"] }}</td>
+                    <td class="py-2 pr-3">{{ r["codigo_estudiante"] }}</td>
+                    <td class="py-2 pr-3">{{ r["nombres"] }} {{ r["apellidos"] }}</td>
+                    <td class="py-2 pr-3">{{ r["carrera"] }}</td>
+                    <td class="py-2 pr-3">
+                        {% if r["tipo_evento"] == "INGRESO" %}
+                        <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">INGRESO</span>
+                        {% else %}
+                        <span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 text-xs font-semibold">SALIDA</span>
+                        {% endif %}
+                    </td>
+                    <td class="py-2">{{ "%.3f"|format(r["umbral_similitud"]) }}</td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td colspan="7" class="py-8 text-center text-slate-400">
+                        No se encontraron registros con los criterios indicados.
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}
+
+{% block scripts %}
+<script>
+    // Botón rápido: aplica la fecha de hoy y envía el formulario.
+    document.addEventListener("DOMContentLoaded", function () {
+        var form = document.querySelector("form[action='/historial']");
+        if (!form) return;
+        var btnHoy = document.createElement("button");
+        btnHoy.type = "button";
+        btnHoy.textContent = "Hoy";
+        btnHoy.className =
+            "px-3 py-2 rounded-lg bg-slate-200 hover:bg-slate-300 " +
+            "text-slate-700 font-medium transition";
+        btnHoy.addEventListener("click", function () {
+            var input = document.getElementById("fecha");
+            input.value = new Date().toISOString().slice(0, 10);
+            form.submit();
+        });
+        document.getElementById("fecha").insertAdjacentElement("afterend", btnHoy);
+    });
+</script>
+{% endblock %}

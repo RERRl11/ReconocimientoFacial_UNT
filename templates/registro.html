@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+
+{% block title %}Registro de Ingresante{% endblock %}
+
+{% block content %}
+<div class="max-w-xl mx-auto bg-white rounded-2xl shadow p-8">
+    <h2 class="text-2xl font-semibold mb-1">Registro de Ingresante</h2>
+    <p class="text-sm text-slate-500 mb-6">
+        Complete los datos y suba una foto frontal con un único rostro visible.
+    </p>
+
+    <form id="form-registro" enctype="multipart/form-data" class="space-y-4">
+        <div>
+            <label for="codigo_estudiante" class="block text-sm font-medium mb-1">
+                Código de estudiante
+            </label>
+            <input type="text" id="codigo_estudiante" name="codigo_estudiante" required
+                   placeholder="Ej. 2026-1042"
+                   class="w-full rounded-lg border border-slate-300 px-3 py-2
+                          focus:outline-none focus:ring-2 focus:ring-indigo-400">
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+                <label for="nombres" class="block text-sm font-medium mb-1">Nombres</label>
+                <input type="text" id="nombres" name="nombres" required
+                       placeholder="Ej. Ana María"
+                       class="w-full rounded-lg border border-slate-300 px-3 py-2
+                              focus:outline-none focus:ring-2 focus:ring-indigo-400">
+            </div>
+            <div>
+                <label for="apellidos" class="block text-sm font-medium mb-1">Apellidos</label>
+                <input type="text" id="apellidos" name="apellidos" required
+                       placeholder="Ej. Quispe Flores"
+                       class="w-full rounded-lg border border-slate-300 px-3 py-2
+                              focus:outline-none focus:ring-2 focus:ring-indigo-400">
+            </div>
+        </div>
+
+        <div>
+            <label for="carrera" class="block text-sm font-medium mb-1">Carrera</label>
+            <input type="text" id="carrera" name="carrera" required
+                   placeholder="Ej. Ingeniería de Sistemas"
+                   class="w-full rounded-lg border border-slate-300 px-3 py-2
+                          focus:outline-none focus:ring-2 focus:ring-indigo-400">
+        </div>
+
+        <div>
+            <label class="block text-sm font-medium mb-1">Foto de perfil</label>
+            <label class="block border-2 border-dashed border-slate-300 rounded-xl p-6
+                          text-center cursor-pointer hover:border-indigo-400 transition">
+                <input type="file" id="foto" name="foto" accept="image/*" required class="hidden">
+                <span id="foto-label" class="text-slate-500 text-sm">
+                    Haz clic para seleccionar la foto (rostro único y frontal)
+                </span>
+                <img id="preview" class="hidden mx-auto mt-4 max-h-52 rounded-lg" alt="Vista previa">
+            </label>
+        </div>
+
+        <button type="submit" id="btn-guardar"
+                class="w-full py-3 rounded-xl bg-indigo-600 hover:bg-indigo-700
+                       text-white font-semibold transition disabled:opacity-50">
+            Registrar estudiante
+        </button>
+    </form>
+
+    <div id="mensaje" class="hidden mt-5"></div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', path='/js/registro.js') }}"></script>
+{% endblock %}

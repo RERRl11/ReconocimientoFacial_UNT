@@ -1,0 +1,118 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Control de Accesos{% endblock %}
+
+{% block content %}
+<div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+
+    <!-- ===================== PANEL DE MARCACIÓN ===================== -->
+    <section class="bg-white rounded-2xl shadow p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-semibold">Panel de Marcación</h2>
+            <span class="text-xs bg-indigo-100 text-indigo-700 px-2 py-1 rounded-full">
+                Umbral: {{ "%.2f"|format(umbral) }}
+            </span>
+        </div>
+
+        <!-- Vista de cámara en vivo -->
+        <div id="zona-camara">
+            <div class="relative bg-black rounded-xl overflow-hidden aspect-video">
+                <video id="video" autoplay playsinline muted
+                       class="w-full h-full object-cover"></video>
+                <div id="overlay-camara"
+                     class="absolute inset-0 hidden items-center justify-center
+                            bg-black/60 text-white text-sm text-center px-4">
+                    Cámara no disponible. Verifique los permisos del navegador.
+                </div>
+            </div>
+            <canvas id="canvas-captura" class="hidden"></canvas>
+        </div>
+
+        <!-- Botones de marcación -->
+        <div class="grid grid-cols-2 gap-3 mt-5">
+            <button id="btn-ingreso"
+                    class="py-3 rounded-xl bg-emerald-600 hover:bg-emerald-700
+                           text-white font-semibold transition disabled:opacity-50">
+                Marcar INGRESO
+            </button>
+            <button id="btn-salida"
+                    class="py-3 rounded-xl bg-rose-600 hover:bg-rose-700
+                           text-white font-semibold transition disabled:opacity-50">
+                Marcar SALIDA
+            </button>
+        </div>
+        <p class="text-xs text-slate-400 mt-2 text-center">
+            También puedes usar "Marcar automático" para alternar según el último evento.
+        </p>
+        <button id="btn-auto"
+                class="w-full mt-2 py-2 rounded-xl bg-slate-700 hover:bg-slate-800
+                       text-white text-sm font-medium transition disabled:opacity-50">
+            Marcar automático (INGRESO/SALIDA)
+        </button>
+
+        <!-- Resultado de la marcación -->
+        <div id="resultado" class="hidden mt-5"></div>
+    </section>
+
+    <!-- ===================== ÚLTIMOS REGISTROS ===================== -->
+    <section class="bg-white rounded-2xl shadow p-6">
+        <div class="flex items-center justify-between mb-4">
+            <h2 class="text-xl font-semibold">Últimos registros</h2>
+            <span class="text-xs bg-slate-100 px-2 py-1 rounded-full">
+                {{ total_estudiantes }} estudiante(s) registrado(s)
+            </span>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-sm">
+                <thead>
+                    <tr class="text-left text-slate-500 border-b">
+                        <th class="py-2 pr-2">Fecha</th>
+                        <th class="py-2 pr-2">Hora</th>
+                        <th class="py-2 pr-2">Código</th>
+                        <th class="py-2 pr-2">Estudiante</th>
+                        <th class="py-2 pr-2">Evento</th>
+                        <th class="py-2">Similitud</th>
+                    </tr>
+                </thead>
+                <tbody id="tbody-registros">
+                    {% for r in ultimos_registros %}
+                    <tr class="border-b last:border-0">
+                        <td class="py-2 pr-2 whitespace-nowrap">{{ r["fecha"] }}</td>
+                        <td class="py-2 pr-2 whitespace-nowrap">{{ r["hora"] }}</td>
+                        <td class="py-2 pr-2">{{ r["codigo_estudiante"] }}</td>
+                        <td class="py-2 pr-2">{{ r["nombres"] }} {{ r["apellidos"] }}</td>
+                        <td class="py-2 pr-2">
+                            {% if r["tipo_evento"] == "INGRESO" %}
+                            <span class="px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-700 text-xs font-semibold">INGRESO</span>
+                            {% else %}
+                            <span class="px-2 py-0.5 rounded-full bg-rose-100 text-rose-700 text-xs font-semibold">SALIDA</span>
+                            {% endif %}
+                        </td>
+                        <td class="py-2">{{ "%.3f"|format(r["umbral_similitud"]) }}</td>
+                    </tr>
+                    {% else %}
+                    <tr>
+                        <td colspan="6" class="py-6 text-center text-slate-400">
+                            Aún no hay registros de acceso.
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+
+        <div class="mt-4 text-right">
+            <a href="/registro"
+               class="inline-block px-4 py-2 rounded-lg bg-indigo-600 hover:bg-indigo-700
+                      text-white text-sm font-medium transition">
+                + Registrar nuevo ingresante
+            </a>
+        </div>
+    </section>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', path='/js/camera.js') }}"></script>
+{% endblock %}

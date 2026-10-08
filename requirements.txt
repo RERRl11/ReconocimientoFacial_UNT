@@ -1,0 +1,15 @@
+# Sistema de Control de Accesos Universitario - Python 3.10
+fastapi==0.115.6
+uvicorn[standard]==0.32.1
+jinja2==3.1.4
+python-multipart==0.0.19
+pydantic==2.10.3
+
+# Motor de reconocimiento facial (InsightFace + ONNX Runtime CPU)
+insightface==0.7.3
+onnxruntime==1.20.1
+
+# Procesamiento de imágenes
+opencv-python==4.10.0.84
+numpy==1.26.4
+Pillow==11.0.0

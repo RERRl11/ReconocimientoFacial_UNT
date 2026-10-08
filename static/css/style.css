@@ -1,0 +1,31 @@
+/*
+ * style.css
+ * ---------
+ * Estilos personalizados complementarios a Tailwind (CDN).
+ * Se mantiene intencionalmente mínimo: la maquetación principal
+ * se realiza con clases utilitarias en las plantillas.
+ */
+
+html {
+    scroll-behavior: smooth;
+}
+
+/* Evita que el video de la cámara quede "espejado" de forma confusa:
+   se muestra tal cual lo entrega el hardware. */
+video {
+    background-color: #000;
+}
+
+/* Foco accesible en botones e inputs */
+button:focus-visible,
+input:focus-visible,
+a:focus-visible {
+    outline: 2px solid #6366f1;
+    outline-offset: 2px;
+}
+
+/* Transición suave para mensajes de resultado */
+#resultado,
+#mensaje {
+    transition: opacity 0.2s ease-in-out;
+}

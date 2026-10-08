@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Control de Accesos Universitario{% endblock %}</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="{{ url_for('static', path='/css/style.css') }}">
+</head>
+<body class="bg-slate-100 min-h-screen text-slate-800">
+
+    <nav class="bg-indigo-700 text-white shadow-md">
+        <div class="max-w-6xl mx-auto px-4 py-4 flex items-center justify-between">
+            <a href="/" class="text-lg font-bold tracking-wide">
+                🎓 Control de Accesos Universitario
+            </a>
+            <div class="space-x-4 text-sm font-medium">
+                <a href="/" class="hover:text-indigo-200 transition">Dashboard</a>
+                <a href="/historial" class="hover:text-indigo-200 transition">Historial</a>
+                <a href="/registro" class="hover:text-indigo-200 transition">Registrar Ingresante</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="max-w-6xl mx-auto px-4 py-8">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer class="text-center text-xs text-slate-400 pb-6">
+        Sistema de Control de Accesos y Registro de Ingresantes &mdash; InsightFace + FastAPI
+    </footer>
+
+    {% block scripts %}{% endblock %}
+</body>
+</html>
